@@ -1,0 +1,47 @@
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT}:5678"
+    environment:
+      - NGROK_AUTHTOKEN_FILE=/run/secrets/ngrok_authtoken
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER_FILE=/run/secrets/n8n_basic_auth_user
+      - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_basic_auth_password
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=${N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE}
+      - MCP_FIRECRAWL_API_KEY=${MCP_FIRECRAWL_API_KEY}
+      - MCP_FIRECRAWL_RETRY_MAX_ATTEMPTS=${MCP_FIRECRAWL_RETRY_MAX_ATTEMPTS}
+      - MCP_FIRECRAWL_RETRY_INITIAL_DELAY=${MCP_FIRECRAWL_RETRY_INITIAL_DELAY}
+      - MCP_FIRECRAWL_RETRY_MAX_DELAY=${MCP_FIRECRAWL_RETRY_MAX_DELAY}
+      - MCP_TIMEZONE=${MCP_TIMEZONE}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - NODE_ENV=production
+      - N8N_EDITOR_BASE_URL=${WEBHOOK_URL}
+      - N8N_PROXY=true
+      - N8N_TRUST_PROXY=true
+      #- GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_data:/home/node/.n8n
+    secrets:
+      - ngrok_authtoken
+      - n8n_basic_auth_user
+      - n8n_basic_auth_password
+
+
+volumes:
+  n8n_data:
+
+secrets:
+  ngrok_authtoken:
+    file: .secrets/ngrok_authtoken
+  n8n_basic_auth_user:
+    file: .secrets/n8n_basic_auth_user
+  n8n_basic_auth_password:
+    file: .secrets/n8n_basic_auth_password
